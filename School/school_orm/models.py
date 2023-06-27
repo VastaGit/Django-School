@@ -1,5 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+import smtplib, ssl
+from .secret_key import key
 
 class CustomUserManager(BaseUserManager):
     """Define a model manager for User model with no username field."""
@@ -30,6 +34,7 @@ class CustomUserManager(BaseUserManager):
 
         return self._create_user(phone_number,password, **extra_fields)
 
+
 class Teacher(AbstractUser):
     username = None
     email = None
@@ -40,6 +45,10 @@ class Teacher(AbstractUser):
     REQUIRED_FIELDS=[]
 
     objects = CustomUserManager()
+
+    def __str__(self):
+        return self.phone_number
+    
 class Student(models.Model):
     name = models.CharField(max_length=100)
     mail = models.EmailField()
@@ -48,6 +57,14 @@ class Student(models.Model):
     gender = models.CharField(max_length=1, choices=[('M', 'Male'), ('F', 'Female')])
     photo = models.ImageField(upload_to='student_photos', blank=True, null=True)
     studies = models.ManyToManyField('Class', through='Studies')
+
+    def __str__(self):
+        return self.name
+    
+@receiver(post_save, sender=Student)
+def sending_notification(sender, instance, **kwargs):
+    print(instance.mail)
+    send_email(instance.mail)
 
 class Class(models.Model):
     name = models.IntegerField()
@@ -63,3 +80,24 @@ class Studies(models.Model):
 class School(models.Model):
     title = models.CharField(max_length=150)
     classes = models.IntegerField(default=0)
+    def __str__(self):
+        return self.title
+    
+
+def send_email(receiver_address):
+
+    port = 465  # For SSL
+    smtp_server = "smtp.gmail.com"
+    sender_email = "askatseitakunov@gmail.com"
+    receiver_email = receiver_address
+    password = key
+    message = """\
+    Congrats!
+
+    You have been successfully added to the system!"""
+
+    context = ssl.create_default_context()
+    with smtplib.SMTP_SSL(smtp_server, port, context=context) as server:
+        server.login(sender_email, password)
+        server.sendmail(sender_email, receiver_email, message)
+    print("Message sent")

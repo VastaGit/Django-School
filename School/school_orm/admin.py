@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
-
+from .models import Student
 
 class CustomUserAdmin(UserAdmin):
     """Define admin model for custom User model with no username field."""
@@ -24,4 +24,10 @@ class CustomUserAdmin(UserAdmin):
     ordering = ('phone_number',)
 
 
+class StudentAdmin(admin.ModelAdmin):
+    search_fields=('name',)
+
+
 admin.site.register(get_user_model(), CustomUserAdmin)
+
+admin.site.register(Student, StudentAdmin)
