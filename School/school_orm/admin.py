@@ -4,9 +4,12 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
-from .models import Student, Teaches, Studies
+from .models import School, Student, Teaches, Studies
+from django.contrib.auth.models import User
 
 class CustomUserAdmin(UserAdmin):
+    verbose_name = 'Teacher'
+    verbose_name_plural = 'Teachers'
     """Define admin model for custom User model with no username field."""
     fieldsets = (
         (None, {'fields': ('phone_number', 'password')}),
@@ -43,11 +46,20 @@ class StudentAdmin(admin.ModelAdmin):
     ordering = ["name"]
     actions = [send_group_email]
 
+class StudiesAdmin(admin.ModelAdmin):
+    list_display = ["class_name_id", "student_id"]
+    ordering = ["class_name_id"]
+
+class TeachesAdmin(admin.ModelAdmin):
+    list_display = ["class_name_id", "teacher_id"]
+    ordering = ["class_name_id"]
 
 admin.site.register(get_user_model(), CustomUserAdmin)
 
 admin.site.register(Student, StudentAdmin)
 
-admin.site.register(Studies)
+admin.site.register(Studies, StudiesAdmin)
 
-admin.site.register(Teaches)
+admin.site.register(Teaches, TeachesAdmin)
+
+admin.site.register(School)

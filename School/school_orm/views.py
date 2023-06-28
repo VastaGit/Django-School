@@ -7,14 +7,6 @@ from django.shortcuts import render, redirect
 from .forms import UserAdminCreationForm
 from django.contrib.auth import get_user_model
 
-def students(request):
-  myStudents = Student.objects.all().values()
-  template = loader.get_template('all_students.html')
-  context = {
-    'myStudents': myStudents,
-  }
-  return HttpResponse(template.render(context, request))
-
 def register(req):
     form = UserAdminCreationForm()
     if req.method == 'POST':
@@ -42,7 +34,7 @@ def send_email_form(request):
             send_mail(subject, message, 'askatseitakunov@gmail.com', [student.mail])
 
         # Redirect to a success page or the admin page
-        return HttpResponseRedirect('/admin/')  # Replace 'admin:index' with the URL name of the admin index page or a custom success page
+        return HttpResponseRedirect('/admin/') 
 
     return render(request, 'email_form.html')
 

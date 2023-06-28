@@ -2,8 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-import smtplib, ssl
-from .secret_key import key
+from django.core.mail import send_mail
 
 class CustomUserManager(BaseUserManager):
     """Define a model manager for User model with no username field."""
@@ -64,7 +63,13 @@ class Student(models.Model):
 @receiver(post_save, sender=Student)
 def sending_notification(sender, instance, **kwargs):
     print(instance.mail)
-    send_email(instance.mail)
+    
+    send_mail(
+        'Congrats!',
+        'You have been successfully added to our system!',
+        'askatseitakunov@gmail.com',
+        [instance.mail]
+    )
 
 class Class(models.Model):
     name = models.IntegerField()
@@ -83,21 +88,3 @@ class School(models.Model):
     def __str__(self):
         return self.title
     
-
-def send_email(receiver_address):
-
-    port = 465  # For SSL
-    smtp_server = "smtp.gmail.com"
-    sender_email = "askatseitakunov@gmail.com"
-    receiver_email = receiver_address
-    password = key
-    message = """\
-    Congrats!
-
-    You have been successfully added to the system!"""
-
-    context = ssl.create_default_context()
-    with smtplib.SMTP_SSL(smtp_server, port, context=context) as server:
-        server.login(sender_email, password)
-        server.sendmail(sender_email, receiver_email, message)
-    print("Message sent")
