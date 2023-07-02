@@ -81,7 +81,7 @@ DATABASES = {
         'NAME': 'School',
         'USER': 'postgres',
         'PASSWORD': 'sadnightdynamite',
-        'HOST': '',  # Leave it as an empty string for localhost
+        'HOST': 'db',  # Leave it as an empty string for localhost
         'PORT': '5432',  # Set the port number as a string
     }
 }
