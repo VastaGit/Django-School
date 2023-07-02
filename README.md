@@ -12,7 +12,7 @@ To install and run the Django-School project, follow these steps:
 2. Navigate to the project directory:
   
    ```
-   cd Django-School
+   cd Django-School/School
    ```
 
 3. Create a virtual environment to isolate the project dependencies:
@@ -79,10 +79,10 @@ Django-School provides the following features:
 
 - [x] Registration of teachers through the website.
 - [x] Teacher authentication with phone number and password.
-- [x] CRUD operations for managing students.
-- [x] Email notifications sent to students upon creation.
+- [x] CRUD operations for managing students in django admin page.
+- [x] Email notifications sent to students upon creation using django-signals.
 - [x] Search functionality to find students by their names.
-- [x] Mass email sending to selected students.
+- [x] Mass email sending to selected students using django.core.mail.
 - [x] PostgreSQL database as the backend.
 
 ## Usage
